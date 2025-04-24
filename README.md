@@ -7,9 +7,9 @@
 
 ## Installation
 
-```jsx
-npm i @wveronese/react-scheduler
-```
+
+npm i @aldabil/react-scheduler
+
 
 If you plan to use `recurring` events in your scheduler, install `rrule` [package](https://www.npmjs.com/package/rrule)
 
@@ -100,7 +100,7 @@ Used to help manage and control the internal state of the `Scheduler` component 
 
 ```js
 import { Scheduler } from "@aldabil/react-scheduler";
-import type { SchedulerRef } from "@aldabil/react-scheduler/types"
+import type, { SchedulerRef } from "@aldabil/react-scheduler/types"
 
 const SomeComponent = () => {
   const calendarRef = useRef<SchedulerRef>(null);
@@ -114,8 +114,8 @@ const SomeComponent = () => {
       </Button>
       <Button onClick={()=>{
         calendarRef.current.scheduler.triggerDialog(true, {
-          start: /*Put the start date*/,
-          end: /*Put the end date*/
+          start: "Put the start date",
+          end: "Put the end date"
         })
       }}>
         Add Event Tomorrow

@@ -20,9 +20,7 @@ function calculateTop({ startHour, step, minuteHeight, timeZone }: CurrentTimeBa
   const topSpace = minutesFromTop * minuteHeight;
   const slotsFromTop = minutesFromTop / step;
   const borderFactor = slotsFromTop + BORDER_HEIGHT;
-  const top = topSpace + borderFactor;
-
-  return top;
+  return topSpace + borderFactor;
 }
 
 const CurrentTimeBar = (props: CurrentTimeBarProps) => {
