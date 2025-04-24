@@ -1,6 +1,6 @@
 {
   "name": "@wveronese/react-scheduler",
-  "version": "3.1.2",
+  "version": "3.1.2-c",
   "description": "React scheduler component based on Material-UI & date-fns",
   "files": [
     "*"
@@ -10,7 +10,7 @@
     "start": "vite serve",
     "build": "vite build --mode production",
     "postbuild": "node ./scripts/post-pack.js",
-    "local:pack": "npm run build && cd dist && npm pack && mv *.tgz ../",
+    "local:pack": "npm run build && cd dist && npm pack && move *.tgz ../",
     "format": "prettier --check \"**/*.{js,jsx,ts,tsx,json}\"",
     "format:write": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "lint": "npm run types && eslint .",
