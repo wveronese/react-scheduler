@@ -77,11 +77,12 @@ const defaultTranslations = (trans: Partial<SchedulerProps["translations"]> = {}
 };
 
 const defaultViews = (props: Partial<SchedulerProps>) => {
-  const { month, week, day } = props;
+  const { month, week, day, workload } = props;
   return {
     month: month !== null ? Object.assign(defaultMonth, month) : null,
     week: week !== null ? Object.assign(defaultWeek, week) : null,
     day: day !== null ? Object.assign(defaultDay, day) : null,
+    workload: workload !== null ? Object.assign(defaultDay, workload) : null,
   };
 };
 

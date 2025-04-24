@@ -17,7 +17,7 @@ import useStore from "../../hooks/useStore";
 import { NavigationDiv } from "../../styles/styles";
 import { getTimeZonedDate } from "../../helpers/generals";
 
-export type View = "month" | "week" | "day";
+export type View = "month" | "week" | "day" | "workload";
 
 const Navigation = () => {
   const {
@@ -82,6 +82,12 @@ const Navigation = () => {
           )
         );
       case "day":
+        return (
+          day?.navigation && (
+            <DayDateBtn selectedDate={selectedDate} onChange={handleSelectedDateChange} />
+          )
+        );
+      case "workload":
         return (
           day?.navigation && (
             <DayDateBtn selectedDate={selectedDate} onChange={handleSelectedDateChange} />

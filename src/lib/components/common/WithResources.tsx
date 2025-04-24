@@ -4,13 +4,32 @@ import { ResourceHeader } from "./ResourceHeader";
 import { ButtonTabProps, ButtonTabs } from "./Tabs";
 import useStore from "../../hooks/useStore";
 import { Box, useTheme } from "@mui/material";
+import { eachMinuteOfInterval, set } from "date-fns";
+import { calcCellHeight, calcCellHeightWorkload } from "../../helpers/generals.tsx";
 
 interface WithResourcesProps {
   renderChildren(resource: DefaultResource): React.ReactNode;
 }
 const WithResources = ({ renderChildren }: WithResourcesProps) => {
-  const { resources, resourceFields, resourceViewMode } = useStore();
+  const { resources, resourceFields, resourceViewMode, view, day, selectedDate, height } =
+    useStore();
+  const { startHour, endHour, step } = day!;
   const theme = useTheme();
+
+  const START_TIME = set(selectedDate, { hours: startHour, minutes: 0, seconds: 0 });
+  const END_TIME = set(selectedDate, { hours: endHour, minutes: -step, seconds: 0 });
+  const hours = eachMinuteOfInterval(
+    {
+      start: START_TIME,
+      end: END_TIME,
+    },
+    { step: step }
+  );
+  const CELL_HEIGHT =
+    view === "day"
+      ? calcCellHeight(height, hours.length)
+      : calcCellHeightWorkload(height, hours.length);
+  const MIN_HEIGHT = hours.length * CELL_HEIGHT;
 
   if (resourceViewMode === "tabs") {
     return <ResourcesTabTables renderChildren={renderChildren} />;
@@ -43,8 +62,28 @@ const WithResources = ({ renderChildren }: WithResourcesProps) => {
   } else {
     return (
       <>
+        {view === "workload" ? (
+          <div
+            key={0}
+            style={{
+              maxWidth: 60,
+              minHeight: MIN_HEIGHT,
+              position: "sticky",
+              left: 0,
+              zIndex: 1000,
+            }}
+          >
+            <ResourceHeader resource={{ assignee: 0, text: "" }} />
+            {renderChildren({ assignee: 0, text: "" })}
+          </div>
+        ) : (
+          ""
+        )}
         {resources.map((res: DefaultResource, i: number) => (
-          <div key={`${res[resourceFields.idField]}_${i}`}>
+          <div
+            key={`${res[resourceFields.idField]}_${i}`}
+            style={{ minHeight: view === "workload" || view === "day" ? MIN_HEIGHT : "auto" }}
+          >
             <ResourceHeader resource={res} />
             {renderChildren(res)}
           </div>

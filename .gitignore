@@ -2,6 +2,7 @@
 dist
 .vscode
 examples
+.idea
 
 #yarn
 .yarn

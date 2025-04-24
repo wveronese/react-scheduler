@@ -38,7 +38,7 @@ export default tseslint.config(
 
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "linebreak-style": ["error", "unix"],
+      // "linebreak-style": ["error", "unix"],
 
       quotes: [
         "error",

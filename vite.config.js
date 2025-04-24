@@ -18,11 +18,11 @@ export default defineConfig(() => ({
     peerDepsExternal(),
   ],
   server: {
-    port: 3000,
+    port: 3001,
     host: true,
   },
   preview: {
-    port: 3000,
+    port: 3001,
   },
   build: {
     lib: {

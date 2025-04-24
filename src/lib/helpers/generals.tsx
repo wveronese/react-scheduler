@@ -29,6 +29,8 @@ export const getOneView = (state: Partial<SchedulerProps>): View => {
     return "week";
   } else if (state.day) {
     return "day";
+  } else if (state.workload) {
+    return "workload";
   }
   throw new Error("No views were selected");
 };
@@ -43,6 +45,9 @@ export const getAvailableViews = (state: SchedulerProps) => {
   }
   if (state.day) {
     views.push("day");
+  }
+  if (state.workload) {
+    views.push("workload");
   }
   return views;
 };
@@ -119,6 +124,10 @@ export const calcMinuteHeight = (cellHeight: number, step: number) => {
 
 export const calcCellHeight = (tableHeight: number, hoursLength: number) => {
   return Math.max(tableHeight / hoursLength, 60);
+};
+
+export const calcCellHeightWorkload = (tableHeight: number, hoursLength: number) => {
+  return Math.max(tableHeight / hoursLength, 30);
 };
 
 export const differenceInDaysOmitTime = (start: Date, end: Date) => {

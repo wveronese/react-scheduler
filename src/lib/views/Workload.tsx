@@ -1,22 +1,20 @@
-import { useEffect, useCallback, Fragment } from "react";
-import { Typography } from "@mui/material";
+import { Fragment, JSX, useCallback, useEffect } from "react";
+import { Typography, useTheme } from "@mui/material";
 import {
-  format,
-  eachMinuteOfInterval,
-  isToday,
-  isBefore,
-  isAfter,
-  startOfDay,
-  endOfDay,
   addDays,
-  addMinutes,
+  eachMinuteOfInterval,
+  endOfDay,
+  format,
+  isAfter,
+  isBefore,
+  isToday,
   set,
+  startOfDay,
 } from "date-fns";
-import TodayTypo from "../components/common/TodayTypo";
 import EventItem from "../components/events/EventItem";
-import { DefaultResource, ProcessedEvent } from "../types";
+import { CellRenderedProps, DayHours, DefaultResource, ProcessedEvent } from "../types";
 import {
-  calcCellHeight,
+  calcCellHeightWorkload,
   calcMinuteHeight,
   filterMultiDaySlot,
   filterTodayEvents,
@@ -24,14 +22,23 @@ import {
   getResourcedEvents,
 } from "../helpers/generals";
 import { WithResources } from "../components/common/WithResources";
-import Cell from "../components/common/Cell";
 import TodayEvents from "../components/events/TodayEvents";
 import { TableGrid } from "../styles/styles";
 import { MULTI_DAY_EVENT_HEIGHT } from "../helpers/constants";
 import useStore from "../hooks/useStore";
 import { DayAgenda } from "./DayAgenda";
 
-const Day = () => {
+export interface WorkloadProps {
+  startHour: DayHours;
+  endHour: DayHours;
+  step: number;
+  cellRenderer?(props: CellRenderedProps): JSX.Element;
+  headRenderer?(day: Date): JSX.Element;
+  hourRenderer?(hour: string): JSX.Element;
+  navigation?: boolean;
+}
+
+const Workload = () => {
   const {
     day,
     selectedDate,
@@ -51,6 +58,7 @@ const Day = () => {
     stickyNavigation,
     agenda,
   } = useStore();
+  const theme = useTheme();
 
   const { startHour, endHour, step, cellRenderer, headRenderer, hourRenderer } = day!;
   const START_TIME = set(selectedDate, { hours: startHour, minutes: 0, seconds: 0 });
@@ -62,7 +70,7 @@ const Day = () => {
     },
     { step: step }
   );
-  const CELL_HEIGHT = calcCellHeight(height, hours.length);
+  const CELL_HEIGHT = calcCellHeightWorkload(height, hours.length);
   const MINUTE_HEIGHT = calcMinuteHeight(CELL_HEIGHT, step);
   const hFormat = getHourFormat(hourFormat);
 
@@ -132,58 +140,48 @@ const Day = () => {
       }
 
       if (agenda) {
-        return <DayAgenda resource={resource} events={resourcedEvents} />;
+        return <DayAgenda events={resourcedEvents} />;
       }
 
-      // Equalizing multi-day section height
-      const shouldEqualize = resources.length && resourceViewMode === "default";
-      const allWeekMulti = filterMultiDaySlot(
-        shouldEqualize ? events : resourcedEvents,
-        selectedDate,
-        timeZone
-      );
-      const headerHeight = MULTI_DAY_EVENT_HEIGHT * allWeekMulti.length + 45;
       return (
         <>
           {/* Header */}
-          <TableGrid days={1} sticky={stickyNavigation ? "1" : "0"}>
-            <span className="rs__cell"></span>
-            <span
-              className={`rs__cell rs__header ${isToday(selectedDate) ? "rs__today_cell" : ""}`}
-              style={{ height: headerHeight }}
-            >
-              {typeof headRenderer === "function" ? (
-                <div>{headRenderer({ day: selectedDate, events: resourcedEvents, resource })}</div>
-              ) : (
-                <TodayTypo date={selectedDate} locale={locale} />
-              )}
-              {renderMultiDayEvents(resourcedEvents)}
-            </span>
-          </TableGrid>
-          <TableGrid
-            days={1}
-            id={"dayContainerId"}
-            sx={{
-              overflowY: resourceViewMode === "tabs" ? "auto" : undefined,
-              height: resourceViewMode === "tabs" ? height : "auto",
-            }}
-          >
+          <TableGrid days={1} sticky={stickyNavigation ? "1" : "0"}></TableGrid>
+          <TableGrid days={1}>
             {/* Body */}
             {hours.map((h, i) => {
-              const start = new Date(`${format(selectedDate, "yyyy/MM/dd")} ${format(h, hFormat)}`);
-              const end = addMinutes(start, step);
-              const field = resourceFields.idField;
               return (
                 <Fragment key={i}>
                   {/* Time Cells */}
-                  <span className="rs__cell rs__header rs__time" style={{ height: CELL_HEIGHT }}>
-                    {typeof hourRenderer === "function" ? (
-                      <div>{hourRenderer(format(h, hFormat, { locale }))}</div>
-                    ) : (
-                      <Typography variant="caption">{format(h, hFormat, { locale })}</Typography>
-                    )}
-                  </span>
-                  <span className={`rs__cell ${isToday(selectedDate) ? "rs__today_cell" : ""}`}>
+                  {parseInt(resource?.assignee as string) === 0 ? (
+                    <span
+                      className="rs__cell rs__header rs__time"
+                      style={{
+                        height: CELL_HEIGHT,
+                        fontSize: "0.5rem",
+                        width: "60px",
+                        backgroundColor: theme.palette.grey[300],
+                      }}
+                    >
+                      {typeof hourRenderer === "function" ? (
+                        <div>{hourRenderer(format(h, hFormat, { locale }))}</div>
+                      ) : (
+                        <Typography variant="caption">{format(h, hFormat, { locale })}</Typography>
+                      )}
+                    </span>
+                  ) : (
+                    <span
+                      className="rs__cell rs__header rs__time"
+                      style={{ height: CELL_HEIGHT, fontSize: "0.5rem", borderRightWidth: 0 }}
+                    ></span>
+                  )}
+
+                  <span
+                    className={`rs__cell ${isToday(selectedDate) ? "rs__today_cell" : ""}`}
+                    style={{
+                      minWidth: parseInt(resource?.assignee as string) === 0 ? "0px" : "auto",
+                    }}
+                  >
                     {/* Events of this day - run once on the top hour column */}
                     {i === 0 && (
                       <TodayEvents
@@ -197,16 +195,6 @@ const Day = () => {
                         timeZone={timeZone}
                       />
                     )}
-                    {/* Cell */}
-                    <Cell
-                      start={start}
-                      end={end}
-                      day={selectedDate}
-                      height={CELL_HEIGHT}
-                      resourceKey={field}
-                      resourceVal={resource ? resource[field] : null}
-                      cellRenderer={cellRenderer}
-                    />
                   </span>
                 </Fragment>
               );
@@ -242,7 +230,7 @@ const Day = () => {
     ]
   );
 
-  return resources.length ? <WithResources renderChildren={renderTable} /> : renderTable();
+  return resources.length + 1 ? <WithResources renderChildren={renderTable} /> : renderTable();
 };
 
-export { Day };
+export { Workload };

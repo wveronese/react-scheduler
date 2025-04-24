@@ -74,6 +74,9 @@ export const StoreProvider = ({ children, initial }: Props) => {
     if (currentViews.includes("day")) {
       view = "day";
       set((prev) => ({ ...prev, view: "day", selectedDate: day }));
+    } else if (currentViews.includes("workload")) {
+      view = "workload";
+      set((prev) => ({ ...prev, view: "workload", selectedDate: day }));
     } else if (currentViews.includes("week")) {
       view = "week";
       set((prev) => ({ ...prev, view: "week", selectedDate: day }));

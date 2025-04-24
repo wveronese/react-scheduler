@@ -7,6 +7,7 @@ import { View } from "./components/nav/Navigation";
 import { Store } from "./store/types";
 import { StateItem } from "./views/Editor";
 import type { RRule } from "rrule";
+import { WorkloadProps } from "./views/Workload";
 
 export type DayHours =
   | 0
@@ -236,6 +237,8 @@ export interface SchedulerProps {
   week: WeekProps | null;
   /**Day view settings */
   day: DayProps | null;
+  /**Workload view settings */
+  workload: WorkloadProps | null;
   /**Initial date selected */
   selectedDate: Date;
   /** Show/Hide date navigation */
