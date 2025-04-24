@@ -1,14 +1,14 @@
 # React Scheduler Component
 
-[![npm package](https://img.shields.io/npm/v/@aldabil/react-scheduler/latest.svg)](https://www.npmjs.com/package/@aldabil/react-scheduler)
-[![Twitter URL](https://img.shields.io/twitter/url?label=%40aldabil&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ffollow%3Fscreen_name%3Daldabil21)](https://twitter.com/intent/follow?screen_name=aldabil21)
+[![npm package](https://img.shields.io/npm/v/@wveronese/react-scheduler/latest.svg)](https://www.npmjs.com/package/@wveronese/react-scheduler)
+[![Twitter URL](https://img.shields.io/twitter/url?label=%40wveronese&style=social&url=https%3A%2F%2Ftwitter.com%2Fintent%2Ffollow%3Fscreen_name%3Dwveronese21)](https://twitter.com/intent/follow?screen_name=wveronese21)
 
 > :warning: **Notice**: This component uses `mui`/`emotion`/`date-fns`. if your project is not already using these libs, this component may not be suitable.
 
 ## Installation
 
 ```
-npm i @aldabil/react-scheduler
+npm i @wveronese/react-scheduler
 ```
 
 If you plan to use `recurring` events in your scheduler, install `rrule` [package](https://www.npmjs.com/package/rrule)
@@ -16,7 +16,7 @@ If you plan to use `recurring` events in your scheduler, install `rrule` [packag
 ## Usage
 
 ```jsx
-import { Scheduler } from "@aldabil/react-scheduler";
+import { Scheduler } from "@wveronese/react-scheduler";
 ```
 
 ## Example
@@ -99,8 +99,8 @@ All props are _optional_
 Used to help manage and control the internal state of the `Scheduler` component from outside of `Scheduler` props, Example:
 
 ```js
-import { Scheduler } from "@aldabil/react-scheduler";
-import type, { SchedulerRef } from "@aldabil/react-scheduler/types"
+import { Scheduler } from "@wveronese/react-scheduler";
+import type, { SchedulerRef } from "@wveronese/react-scheduler/types"
 
 const SomeComponent = () => {
   const calendarRef = useRef<SchedulerRef>(null);
